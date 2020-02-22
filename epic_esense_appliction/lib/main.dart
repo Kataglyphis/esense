@@ -1,113 +1,169 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 import 'package:esense_flutter/esense.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  String _deviceName = 'Unknown';
+  double _voltage = -1;
+  String _deviceStatus = '';
+  bool sampling = false;
+  String _event = '';
+  String _button = 'not pressed';
+
+  // the name of the eSense device to connect to -- change this to your own device.
+  String eSenseName = 'eSense-0414';
+
+  @override
+  void initState() {
+    super.initState();
+    _connectToESense();
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  Future<void> _connectToESense() async {
+    bool con = false;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
+    // if you want to get the connection events when connecting, set up the listener BEFORE connecting...
+    ESenseManager.connectionEvents.listen((event) {
+      print('CONNECTION event: $event');
 
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+      // when we're connected to the eSense device, we can start listening to events from it
+      if (event.type == ConnectionType.connected) _listenToESenseEvents();
 
-  final String title;
+      setState(() {
+        switch (event.type) {
+          case ConnectionType.connected:
+            _deviceStatus = 'connected';
+            break;
+          case ConnectionType.unknown:
+            _deviceStatus = 'unknown';
+            break;
+          case ConnectionType.disconnected:
+            _deviceStatus = 'disconnected';
+            break;
+          case ConnectionType.device_found:
+            _deviceStatus = 'device_found';
+            break;
+          case ConnectionType.device_not_found:
+            _deviceStatus = 'device_not_found';
+            break;
+        }
+      });
+    });
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+    con = await ESenseManager.connect(eSenseName);
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _deviceStatus = con ? 'connecting' : 'connection failed';
     });
   }
 
-  @override
+  void _listenToESenseEvents() async {
+    ESenseManager.eSenseEvents.listen((event) {
+      print('ESENSE event: $event');
+
+      setState(() {
+        switch (event.runtimeType) {
+          case DeviceNameRead:
+            _deviceName = (event as DeviceNameRead).deviceName;
+            break;
+          case BatteryRead:
+            _voltage = (event as BatteryRead).voltage;
+            break;
+          case ButtonEventChanged:
+            _button = (event as ButtonEventChanged).pressed ? 'pressed' : 'not pressed';
+            break;
+          case AccelerometerOffsetRead:
+          // TODO
+            break;
+          case AdvertisementAndConnectionIntervalRead:
+          // TODO
+            break;
+          case SensorConfigRead:
+          // TODO
+            break;
+        }
+      });
+    });
+
+    _getESenseProperties();
+  }
+
+  void _getESenseProperties() async {
+    // get the battery level every 10 secs
+    Timer.periodic(Duration(seconds: 10), (timer) async => await ESenseManager.getBatteryVoltage());
+
+    // wait 2, 3, 4, 5, ... secs before getting the name, offset, etc.
+    // it seems like the eSense BTLE interface does NOT like to get called
+    // several times in a row -- hence, delays are added in the following calls
+    Timer(Duration(seconds: 2), () async => await ESenseManager.getDeviceName());
+    Timer(Duration(seconds: 3), () async => await ESenseManager.getAccelerometerOffset());
+    Timer(Duration(seconds: 4), () async => await ESenseManager.getAdvertisementAndConnectionInterval());
+    Timer(Duration(seconds: 5), () async => await ESenseManager.getSensorConfig());
+  }
+
+  StreamSubscription subscription;
+  void _startListenToSensorEvents() async {
+    // subscribe to sensor event from the eSense device
+    subscription = ESenseManager.sensorEvents.listen((event) {
+      print('SENSOR event: $event');
+      setState(() {
+        _event = event.toString();
+      });
+    });
+    setState(() {
+      sampling = true;
+    });
+  }
+
+  void _pauseListenToSensorEvents() async {
+    subscription.cancel();
+    setState(() {
+      sampling = false;
+    });
+  }
+
+  void dispose() {
+    _pauseListenToSensorEvents();
+    ESenseManager.disconnect();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Epic eSense Gym Ear Tracker'),
+        ),
+        body: Align(
+          alignment: Alignment.topLeft,
+          child: ListView(
+            children: [
+              Text('eSense Device Status: \t$_deviceStatus'),
+              Text('eSense Device Name: \t$_deviceName'),
+              Text('eSense Battery Level: \t$_voltage'),
+              Text('eSense Button Event: \t$_button'),
+              Text(''),
+              Text('$_event'),
+            ],
+          ),
+        ),
+        floatingActionButton: new FloatingActionButton(
+          // a floating button that starts/stops listening to sensor events.
+          // is disabled until we're connected to the device.
+          onPressed:
+          (!ESenseManager.connected) ? null : (!sampling) ? _startListenToSensorEvents : _pauseListenToSensorEvents,
+          tooltip: 'Listen to eSense sensors',
+          child: (!sampling) ? Icon(Icons.play_arrow) : Icon(Icons.pause),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
