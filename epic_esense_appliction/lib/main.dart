@@ -2,23 +2,31 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:esense_flutter/esense.dart';
+import 'package:epic_esense_appliction/category_route.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MyEpicESenseApp());
 
-class MyApp extends StatefulWidget {
+class MyEpicESenseApp extends StatefulWidget {
+
   @override
   _MyAppState createState() => _MyAppState();
+  /*Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Gym Tracker',
+      home: CategoryRoute(),
+    );
+  }*/
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyEpicESenseApp> {
+
   String _deviceName = 'Unknown';
   double _voltage = -1;
   String _deviceStatus = '';
   bool sampling = false;
   String _event = '';
   String _button = 'not pressed';
-
-  // the name of the eSense device to connect to -- change this to your own device.
   String eSenseName = 'eSense-0414';
 
   @override
@@ -137,10 +145,21 @@ class _MyAppState extends State<MyApp> {
   }
 
   Widget build(BuildContext context) {
+    /*Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Gym Tracker',
+      home: CategoryRoute(),
+    );
+  }*/
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Control your epic audio experience',
+      home: CategoryRoute(),
+      /*debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Epic eSense Gym Ear Tracker'),
+          title: const Text('Epic eSense Ear Tracker'),
         ),
         body: Align(
           alignment: Alignment.topLeft,
@@ -163,7 +182,7 @@ class _MyAppState extends State<MyApp> {
           tooltip: 'Listen to eSense sensors',
           child: (!sampling) ? Icon(Icons.play_arrow) : Icon(Icons.pause),
         ),
-      ),
+      ),*/
     );
   }
 }
