@@ -1,39 +1,46 @@
 import 'package:flutter/material.dart';
 
-class Info extends StatelessWidget {
-  String _deviceName;
-  double _voltage;
-  String _deviceStatus;
+class Info extends StatefulWidget {
+
+  String deviceName;
+  double voltage;
+  String deviceStatus;
   bool sampling;
-  String _event;
-  String _button;
+  String event;
+  String button;
   String eSenseName;
 
-  Info(String _deviceName, double _voltage, String _deviceStatus, bool sampling,
-      String _event, String _button, String eSenseName) {
-    this._deviceName = _deviceName;
-    this._voltage = _voltage;
-    this._deviceStatus = _deviceStatus;
+  Info(String deviceName, double voltage, String deviceStatus, bool sampling,
+      String Stringevent, String button, String eSenseName) {
+    this.deviceName = deviceName;
+    this.voltage = voltage;
+    this.deviceStatus = deviceStatus;
     this.sampling = sampling;
-    this._event = _event;
-    this._button = _button;
+    this.event = Stringevent;
+    this.button = button;
     this.eSenseName = eSenseName;
   }
 
   @override
+  _MyInfoState createState() => _MyInfoState();
+
+}
+
+  class _MyInfoState extends State<Info> {
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Align(
+      backgroundColor: (widget.deviceStatus == 'device_not_found') ? Colors.redAccent : Colors.greenAccent,
+      body:
+      Align(
         alignment: Alignment.topLeft,
         child: ListView(
           children: [
-            Text('eSense Device Status: \t$_deviceStatus'),
-            Text('eSense Device Name: \t$_deviceName'),
-            Text('eSense Battery Level: \t$_voltage'),
-            Text('eSense Button Event: \t$_button'),
-            Text(''),
-            Text('$_event'),
+            Text('eSense Device Status: \t'+ widget.deviceStatus),
+            Text('eSense Device Name: \t' + widget.deviceName),
+            Text('eSense Battery Level: \t' + widget.voltage.toString()),
+            Text('eSense Button Event: \t' + widget.button),
           ],
         ),
       ),
@@ -42,5 +49,23 @@ class Info extends StatelessWidget {
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  void pressedButton() {
+    setState(() {
+
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
   }
 }

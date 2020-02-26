@@ -17,12 +17,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  String _deviceName = 'Unknown';
-  double _voltage = -1;
-  String _deviceStatus = '';
+  String deviceName = 'Unknown';
+  double voltage = -1;
+  String deviceStatus = '';
   bool sampling = false;
-  String _event = '';
-  String _button = 'not pressed';
+  String eventString = '';
+  String button = 'not pressed';
 
   // the name of the eSense device to connect to -- change this to your own device.
   String eSenseName = 'eSense-0414';
@@ -38,15 +38,13 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: PageView(
         children: <Widget>[
-          Container(
-            color: Colors.orangeAccent,
-          ),
-          Info( _deviceName,
-          _voltage,
-          _deviceStatus,
+          Modi(),
+          Info(deviceName,
+          voltage,
+          deviceStatus,
           sampling,
-          _event,
-          _button,
+          eventString,
+          button,
           eSenseName)
         ],
         controller: _pageController,
@@ -66,6 +64,14 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         onTap: navigationTapped,
         currentIndex: _page,
+      ),
+      floatingActionButton: new FloatingActionButton(
+        // a floating button that starts/stops listening to sensor events.
+        // is disabled until we're connected to the device.
+        onPressed:
+        (!ESenseManager.connected) ? null : (!sampling) ? _startListenToSensorEvents : _pauseListenToSensorEvents,
+        tooltip: 'Listen to eSense sensors',
+        child: (!sampling) ? Icon(Icons.play_arrow) : Icon(Icons.pause),
       ),
     );
   }
@@ -114,19 +120,19 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         switch (event.type) {
           case ConnectionType.connected:
-            _deviceStatus = 'connected';
+            deviceStatus = 'connected';
             break;
           case ConnectionType.unknown:
-            _deviceStatus = 'unknown';
+            deviceStatus = 'unknown';
             break;
           case ConnectionType.disconnected:
-            _deviceStatus = 'disconnected';
+            deviceStatus = 'disconnected';
             break;
           case ConnectionType.device_found:
-            _deviceStatus = 'device_found';
+            deviceStatus = 'device_found';
             break;
           case ConnectionType.device_not_found:
-            _deviceStatus = 'device_not_found';
+            deviceStatus = 'device_not_found';
             break;
         }
       });
@@ -135,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
     con = await ESenseManager.connect(eSenseName);
 
     setState(() {
-      _deviceStatus = con ? 'connecting' : 'connection failed';
+      deviceStatus = con ? 'connecting' : 'connection failed';
     });
   }
 
@@ -146,13 +152,13 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         switch (event.runtimeType) {
           case DeviceNameRead:
-            _deviceName = (event as DeviceNameRead).deviceName;
+            deviceName = (event as DeviceNameRead).deviceName;
             break;
           case BatteryRead:
-            _voltage = (event as BatteryRead).voltage;
+            voltage = (event as BatteryRead).voltage;
             break;
           case ButtonEventChanged:
-            _button = (event as ButtonEventChanged).pressed ? 'pressed' : 'not pressed';
+            button = (event as ButtonEventChanged).pressed ? 'pressed' : 'not pressed';
             break;
           case AccelerometerOffsetRead:
           // TODO
@@ -189,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription = ESenseManager.sensorEvents.listen((event) {
       print('SENSOR event: $event');
       setState(() {
-        _event = event.toString();
+        eventString = event.toString();
       });
     });
     setState(() {
