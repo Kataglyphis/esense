@@ -5,25 +5,21 @@ import 'package:epic_esense_app/navigation_screens/Modus.dart';
 class Modi extends StatelessWidget {
 
   static const _modiNames = <String>[
-    'Length',
-    'Area',
-    'Volume',
-    'Mass',
-    'Time',
-    'Digital Storage',
-    'Energy',
-    'Currency',
+    'Volume Modulator',
+    'Workout',
+    'None',
   ];
 
   static const _baseColors = <Color>[
     Colors.teal,
     Colors.orange,
-    Colors.pinkAccent,
-    Colors.blueAccent,
-    Colors.yellow,
-    Colors.greenAccent,
-    Colors.purpleAccent,
     Colors.red,
+  ];
+
+  static const _baseIcons = <IconData>[
+    Icons.audiotrack,
+    Icons.fitness_center,
+    Icons.block,
   ];
   
   Widget _buildModiWidgets(List<Widget> modi) {
@@ -42,7 +38,7 @@ class Modi extends StatelessWidget {
       modi.add(Modus(
         name: _modiNames[i],
         color: _baseColors[i],
-        iconLocation: Icons.cake,
+        iconLocation: _baseIcons[i],
       ));
     }
 

@@ -9,9 +9,12 @@ class Info extends StatefulWidget {
   String event;
   String button;
   String eSenseName;
+  int offsetX;
+  int offsetY;
+  int offsetZ;
 
   Info(String deviceName, double voltage, String deviceStatus, bool sampling,
-      String Stringevent, String button, String eSenseName) {
+      String Stringevent, String button, String eSenseName, int offsetX, int offsetY, int offsetZ) {
     this.deviceName = deviceName;
     this.voltage = voltage;
     this.deviceStatus = deviceStatus;
@@ -19,6 +22,9 @@ class Info extends StatefulWidget {
     this.event = Stringevent;
     this.button = button;
     this.eSenseName = eSenseName;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
+    this.offsetZ = offsetZ;
   }
 
   @override
@@ -41,6 +47,9 @@ class Info extends StatefulWidget {
             Text('eSense Device Name: \t' + widget.deviceName),
             Text('eSense Battery Level: \t' + widget.voltage.toString()),
             Text('eSense Button Event: \t' + widget.button),
+            Text('eSense OffsetX: \t' + widget.offsetX.toString()),
+            Text('eSense OffsetY: \t' + widget.offsetY.toString()),
+            Text('eSense OffsetZ: \t' + widget.offsetZ.toString())
           ],
         ),
       ),

@@ -23,9 +23,10 @@ class _MyHomePageState extends State<MyHomePage> {
   bool sampling = false;
   String eventString = '';
   String button = 'not pressed';
-
-  // the name of the eSense device to connect to -- change this to your own device.
   String eSenseName = 'eSense-0414';
+  int offsetX = -1;
+  int offsetY = -1;
+  int offsetZ = -1;
 
   PageController _pageController;
   var _page = 0;
@@ -45,7 +46,11 @@ class _MyHomePageState extends State<MyHomePage> {
           sampling,
           eventString,
           button,
-          eSenseName)
+          eSenseName,
+          offsetX,
+          offsetY,
+          offsetZ)
+
         ],
         controller: _pageController,
         physics: BouncingScrollPhysics(),
@@ -54,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.info),
+            icon: Icon(Icons.account_circle),
             title: Text("Modi"),
           ),
           BottomNavigationBarItem(
@@ -161,7 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
             button = (event as ButtonEventChanged).pressed ? 'pressed' : 'not pressed';
             break;
           case AccelerometerOffsetRead:
-          // TODO
+            offsetX = (event as AccelerometerOffsetRead).offsetX;
+            offsetY = (event as AccelerometerOffsetRead).offsetY;
+            offsetZ = (event as AccelerometerOffsetRead).offsetZ;
             break;
           case AdvertisementAndConnectionIntervalRead:
           // TODO
@@ -184,9 +191,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // it seems like the eSense BTLE interface does NOT like to get called
     // several times in a row -- hence, delays are added in the following calls
     Timer(Duration(seconds: 2), () async => await ESenseManager.getDeviceName());
-    Timer(Duration(seconds: 3), () async => await ESenseManager.getAccelerometerOffset());
-    Timer(Duration(seconds: 4), () async => await ESenseManager.getAdvertisementAndConnectionInterval());
-    Timer(Duration(seconds: 5), () async => await ESenseManager.getSensorConfig());
+    Timer(Duration(seconds: 4), () async => await ESenseManager.getAccelerometerOffset());
+    Timer(Duration(seconds: 6), () async => await ESenseManager.getAdvertisementAndConnectionInterval());
+    Timer(Duration(seconds: 8), () async => await ESenseManager.getSensorConfig());
   }
 
   StreamSubscription subscription;

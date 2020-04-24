@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import 'package:epic_esense_app/MyHomePage.dart';
@@ -9,11 +10,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Epic Flutter Demonstration',
+      title: 'Epic ESense Experience',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Epic ESense Experience'),
+      home: MyHomePage(title: 'Control with gestures'),
     );
   }
 }
