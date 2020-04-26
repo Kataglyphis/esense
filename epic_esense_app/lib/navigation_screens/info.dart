@@ -9,12 +9,16 @@ class Info extends StatefulWidget {
   String event;
   String button;
   String eSenseName;
-  int offsetX;
-  int offsetY;
-  int offsetZ;
+  String offsetX;
+  String offsetY;
+  String offsetZ;
+  String gyroX;
+  String gyroY;
+  String gyroZ;
 
   Info(String deviceName, double voltage, String deviceStatus, bool sampling,
-      String Stringevent, String button, String eSenseName, int offsetX, int offsetY, int offsetZ) {
+      String Stringevent, String button, String eSenseName, String offsetX, String offsetY, String offsetZ,
+      String gyroX, String gyroY, String gyroZ) {
     this.deviceName = deviceName;
     this.voltage = voltage;
     this.deviceStatus = deviceStatus;
@@ -25,6 +29,9 @@ class Info extends StatefulWidget {
     this.offsetX = offsetX;
     this.offsetY = offsetY;
     this.offsetZ = offsetZ;
+    this.gyroX = gyroX;
+    this.gyroY = gyroY;
+    this.gyroZ = gyroZ;
   }
 
   @override
@@ -47,15 +54,14 @@ class Info extends StatefulWidget {
             Text('eSense Device Name: \t' + widget.deviceName),
             Text('eSense Battery Level: \t' + widget.voltage.toString()),
             Text('eSense Button Event: \t' + widget.button),
-            Text('eSense OffsetX: \t' + widget.offsetX.toString()),
-            Text('eSense OffsetY: \t' + widget.offsetY.toString()),
-            Text('eSense OffsetZ: \t' + widget.offsetZ.toString())
+            Text('eSense accel OffsetX: \t' + widget.offsetX),
+            Text('eSense accel OffsetY: \t' + widget.offsetY),
+            Text('eSense accel OffsetZ: \t' + widget.offsetZ),
+            Text('eSense gyro OffsetX: \t' + widget.gyroX),
+            Text('eSense gyro OffsetY: \t' + widget.gyroY),
+            Text('eSense gyro OffsetZ: \t' + widget.gyroZ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Increment Counter',
-        child: const Icon(Icons.add),
       ),
     );
   }

@@ -12,6 +12,7 @@ final _borderRadius = BorderRadius.circular(_rowHeight / 2);
 /// The widget is composed on an [Icon] and [Text]. Tapping on the widget shows
 /// a colored [InkWell] animation.
 class Modus extends StatelessWidget {
+
   final String name;
   final ColorSwatch color;
   final IconData iconLocation;

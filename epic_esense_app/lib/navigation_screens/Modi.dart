@@ -2,24 +2,42 @@ import 'package:flutter/material.dart';
 
 import 'package:epic_esense_app/navigation_screens/Modus.dart';
 
+enum LastButtonPressed {VolumeModulator,Workout,None }
+
 class Modi extends StatelessWidget {
 
   static const _modiNames = <String>[
-    'Volume Modulator',
     'Workout',
     'None',
+    'None',
+    'None',
+    'None',
+    'None',
+    'None',
+    'None'
   ];
 
   static const _baseColors = <Color>[
     Colors.teal,
-    Colors.orange,
     Colors.red,
+    Colors.red,
+    Colors.red,
+    Colors.red,
+    Colors.red,
+    Colors.red,
+    Colors.red
   ];
 
   static const _baseIcons = <IconData>[
-    Icons.audiotrack,
     Icons.fitness_center,
     Icons.block,
+    Icons.block,
+    Icons.block,
+    Icons.block,
+    Icons.block,
+    Icons.block,
+    Icons.block,
+    Icons.block
   ];
   
   Widget _buildModiWidgets(List<Widget> modi) {

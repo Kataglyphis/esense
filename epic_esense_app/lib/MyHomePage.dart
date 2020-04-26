@@ -5,6 +5,7 @@ import 'package:epic_esense_app/navigation_screens/Modi.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:esense_flutter/esense.dart';
+import 'dart:collection';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -24,9 +25,13 @@ class _MyHomePageState extends State<MyHomePage> {
   String eventString = '';
   String button = 'not pressed';
   String eSenseName = 'eSense-0414';
-  int offsetX = -1;
-  int offsetY = -1;
-  int offsetZ = -1;
+  String accelX = 'to be filled with';
+  String accelY = 'to be filled with';
+  String accelZ = 'to be filled with';
+  String gyroX = 'to be filled with';
+  String gyroY = 'to be filled with';
+  String gyroZ = 'to be filled with';
+  String accelerometer;
 
   PageController _pageController;
   var _page = 0;
@@ -47,9 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
           eventString,
           button,
           eSenseName,
-          offsetX,
-          offsetY,
-          offsetZ)
+          accelX,
+          accelY,
+          accelZ,
+          gyroX,
+          gyroY,
+          gyroZ)
 
         ],
         controller: _pageController,
@@ -70,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: navigationTapped,
         currentIndex: _page,
       ),
+
       floatingActionButton: new FloatingActionButton(
         // a floating button that starts/stops listening to sensor events.
         // is disabled until we're connected to the device.
@@ -166,9 +175,6 @@ class _MyHomePageState extends State<MyHomePage> {
             button = (event as ButtonEventChanged).pressed ? 'pressed' : 'not pressed';
             break;
           case AccelerometerOffsetRead:
-            offsetX = (event as AccelerometerOffsetRead).offsetX;
-            offsetY = (event as AccelerometerOffsetRead).offsetY;
-            offsetZ = (event as AccelerometerOffsetRead).offsetZ;
             break;
           case AdvertisementAndConnectionIntervalRead:
           // TODO
@@ -191,17 +197,69 @@ class _MyHomePageState extends State<MyHomePage> {
     // it seems like the eSense BTLE interface does NOT like to get called
     // several times in a row -- hence, delays are added in the following calls
     Timer(Duration(seconds: 2), () async => await ESenseManager.getDeviceName());
-    Timer(Duration(seconds: 4), () async => await ESenseManager.getAccelerometerOffset());
-    Timer(Duration(seconds: 6), () async => await ESenseManager.getAdvertisementAndConnectionInterval());
-    Timer(Duration(seconds: 8), () async => await ESenseManager.getSensorConfig());
+    Timer(Duration(seconds: 3), () async => await ESenseManager.getAccelerometerOffset());
+    Timer(Duration(seconds: 4), () async => await ESenseManager.getAdvertisementAndConnectionInterval());
+    Timer(Duration(seconds: 5), () async => await ESenseManager.getSensorConfig());
   }
 
   StreamSubscription subscription;
   void _startListenToSensorEvents() async {
+
+    //implementing a Moving Average Filter for more precise results
+    Queue queueX_accel = new Queue();
+    Queue queueY_accel = new Queue();
+    Queue queueZ_accel = new Queue();
+    Queue queueX_gyro = new Queue();
+    Queue queueY_gyro = new Queue();
+    Queue queueZ_gyro = new Queue();
+
     // subscribe to sensor event from the eSense device
     subscription = ESenseManager.sensorEvents.listen((event) {
-      print('SENSOR event: $event');
+      //print('SENSOR event: $event');
       setState(() {
+        if(queueX_accel.length <= 10) {
+
+          queueX_gyro.addFirst(event.gyro[0]);
+          queueY_gyro.addFirst(event.gyro[1]);
+          queueZ_gyro.addFirst(event.gyro[2]);
+
+          queueX_accel.addFirst(event.accel[0]);
+          queueY_accel.addFirst(event.accel[1]);
+          queueZ_accel.addFirst(event.accel[2]);
+
+        } else {
+
+          List<int> mv_data_accel = new List();
+          List<int> mv_data_gyro = new List();
+          const int offsetX = -5504;
+          const int offsetY = -5568;
+          const int offsetZ = 9580;
+
+          mv_data_accel.add(_filter(queueX_accel) - offsetX);
+          mv_data_accel.add(_filter(queueY_accel) - offsetY);
+          mv_data_accel.add(_filter(queueZ_accel) - offsetZ);
+
+          mv_data_gyro.add(_filter(queueX_gyro));
+          mv_data_gyro.add(_filter(queueY_gyro));
+          mv_data_gyro.add(_filter(queueZ_gyro));
+
+          //BLEeSense specs page 16 very bottom of page
+          accelX = ((mv_data_accel[0] / 16384) * 9.80665).toStringAsFixed(1);
+          accelY = ((mv_data_accel[1] / 16384) * 9.80665).toStringAsFixed(1);
+          accelZ = ((mv_data_accel[2] / 16384) * 9.80665).toStringAsFixed(1);
+          
+          gyroX = mv_data_gyro[0].toStringAsFixed(1);
+          gyroX = mv_data_gyro[1].toStringAsFixed(1);
+          gyroX = mv_data_gyro[2].toStringAsFixed(1);
+
+          queueX_gyro.removeLast();
+          queueY_gyro.removeLast();
+          queueZ_gyro.removeLast();
+
+          queueX_accel.removeLast();
+          queueY_accel.removeLast();
+          queueZ_accel.removeLast();
+        }
         eventString = event.toString();
       });
     });
@@ -215,6 +273,18 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       sampling = false;
     });
+  }
+
+  //simple moving average for less vanished results
+  int _filter(Queue queue) {
+    List<int> list = new List();
+    queue.forEach((element) => list.add(element));
+    list.sort();
+    int sum = 0;
+    for(var i = 0; i < list.length; i++) {
+      sum += list[i];
+    }
+    return (sum / list.length).round();
   }
 
 }
