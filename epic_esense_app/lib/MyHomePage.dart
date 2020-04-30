@@ -1,15 +1,14 @@
+import 'dart:collection';
 import 'package:flutter/material.dart';
-
+import 'package:epic_esense_app/navigation_screens/head_gestures/head_gesture.dart';
 import 'package:epic_esense_app/navigation_screens/info.dart';
 import 'package:epic_esense_app/navigation_screens/Modi.dart';
 import 'dart:async';
-import 'package:flutter/services.dart';
 import 'package:esense_flutter/esense.dart';
-import 'dart:collection';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:epic_esense_app/navigation_screens/MusicPlayer.dart';
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -22,6 +21,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  EventBus sensorEventBus = new EventBus();
   String deviceName = 'Unknown';
   double voltage = -1;
   String deviceStatus = '';
@@ -36,9 +36,13 @@ class _MyHomePageState extends State<MyHomePage> {
   String gyroY = 'to be filled with';
   String gyroZ = 'to be filled with';
   String accelerometer;
+  MusicPlayer mp;
 
-  EventBus connectedBus;
-  EventBus songChangedBus;
+  //List<gesture_observer> = [];
+
+  StreamSubscription sensorSubscription;
+  StreamSubscription eSenseSubscription;
+
   int currentSong = -1;
   bool listeningToGestures = false;
 
@@ -54,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body:
         PageView(
         children: <Widget>[
-          MusicPlayer(),
+          mp,
           Modi(),
           Info(deviceName,
           voltage,
@@ -126,6 +130,15 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _pageController = PageController();
     _connectToESense();
+    this.mp = MusicPlayer(connectedBus: this.connectedBus);
+    this.sensorEventBus.on<head_gesture_event_start>()
+        .listen((_) => setState(() {
+      listeningToGestures = true;
+    }));
+    this.sensorEventBus.on<head_gesture_event_stop>()
+        .listen((_) => setState(() {
+      listeningToGestures = false;
+    }));
   }
 
   @override
@@ -262,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
           accelX = ((mv_data_accel[0] / 16384) * 9.80665).toStringAsFixed(1);
           accelY = ((mv_data_accel[1] / 16384) * 9.80665).toStringAsFixed(1);
           accelZ = ((mv_data_accel[2] / 16384) * 9.80665).toStringAsFixed(1);
-          
+
           gyroX = mv_data_gyro[0].toStringAsFixed(1);
           gyroX = mv_data_gyro[1].toStringAsFixed(1);
           gyroX = mv_data_gyro[2].toStringAsFixed(1);
@@ -292,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   //simple moving average for less vanished results
   int _filter(Queue queue) {
-    List<int> list = new List();
+    List<int> list = [];
     queue.forEach((element) => list.add(element));
     list.sort();
     int sum = 0;

@@ -2,20 +2,30 @@ import 'package:flutter/material.dart';
 
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:esense_flutter/esense.dart';
+import 'package:event_bus/event_bus.dart';
 
 class MusicPlayer extends StatefulWidget {
   @override
-  _MusicPlayerState createState() => _MusicPlayerState();
+  _MusicPlayerState createState() => _MusicPlayerState(connectedBus: this.connectedBus);
+
+  final connectedBus;
+  MusicPlayer({this.connectedBus});
 }
 
 class _MusicPlayerState extends State<MusicPlayer> {
   final _volumeSubject = BehaviorSubject.seeded(1.0);
   final _speedSubject = BehaviorSubject.seeded(1.0);
   AudioPlayer _player;
+  EventBus connectedBus;
+
+  _MusicPlayerState({this.connectedBus});
 
   @override
   void initState() {
     super.initState();
+    this._register_sensor_observer();
+    this._register_sensor_listeners();
     _player = AudioPlayer();
     _player
         .setAsset('assets/audio/Powerwolf/Blood_of_the_Saints/Agnus_Dei_(Intro).mp3');
@@ -45,8 +55,8 @@ class _MusicPlayerState extends State<MusicPlayer> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Science Friday"),
-              Text("Science Friday and WNYC Studios"),
+              Text("Powerwolf"),
+              Text("Blood of the Saints"),
               StreamBuilder<FullAudioPlaybackState>(
                 stream: _player.fullPlaybackStateStream,
                 builder: (context, snapshot) {
@@ -144,6 +154,17 @@ class _MusicPlayerState extends State<MusicPlayer> {
         ),
     );
   }
+  /////////////////////////////////////////////////////////////////////////////
+  /////// eSense part ////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////
+
+  void _register_sensor_observer() {
+
+  }
+
+  void _register_sensor_listeners() {
+
+  }
 }
 
 class SeekBar extends StatefulWidget {
@@ -188,4 +209,5 @@ class _SeekBarState extends State<SeekBar> {
       },
     );
   }
+
 }
