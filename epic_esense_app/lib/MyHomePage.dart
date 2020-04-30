@@ -6,6 +6,10 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:esense_flutter/esense.dart';
 import 'dart:collection';
+import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:epic_esense_app/navigation_screens/MusicPlayer.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -33,6 +37,11 @@ class _MyHomePageState extends State<MyHomePage> {
   String gyroZ = 'to be filled with';
   String accelerometer;
 
+  EventBus connectedBus;
+  EventBus songChangedBus;
+  int currentSong = -1;
+  bool listeningToGestures = false;
+
   PageController _pageController;
   var _page = 0;
 
@@ -42,8 +51,10 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: PageView(
+      body:
+        PageView(
         children: <Widget>[
+          MusicPlayer(),
           Modi(),
           Info(deviceName,
           voltage,
@@ -67,13 +78,17 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
+            icon: Icon(Icons.music_video),
+            title: Text("Musik"),
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             title: Text("Modi"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.info),
             title: Text("Info"),
-          ),
+          )
         ],
         onTap: navigationTapped,
         currentIndex: _page,

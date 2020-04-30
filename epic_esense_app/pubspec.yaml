@@ -14,17 +14,22 @@ description: A new ESense application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   esense_flutter: ^0.2.1
+  flutter_neumorphic: ^1.0.5+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   flutter_launcher_icons: ^0.7.4
+  event_bus: ^1.1.0
+  just_audio: ^0.1.8
+  flutter_radio: ^0.1.8
+  flutter_tts: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -38,6 +43,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/audio/
 #my own launcher icon
 flutter_icons:
   android: true
