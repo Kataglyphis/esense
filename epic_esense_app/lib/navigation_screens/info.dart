@@ -1,37 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../esense.dart';
+
 class Info extends StatefulWidget {
 
-  String deviceName;
-  double voltage;
-  String deviceStatus;
-  bool sampling;
-  String event;
-  String button;
-  String eSenseName;
-  String offsetX;
-  String offsetY;
-  String offsetZ;
-  String gyroX;
-  String gyroY;
-  String gyroZ;
+  ESense eSense;
 
-  Info(String deviceName, double voltage, String deviceStatus, bool sampling,
-      String Stringevent, String button, String eSenseName, String offsetX, String offsetY, String offsetZ,
-      String gyroX, String gyroY, String gyroZ) {
-    this.deviceName = deviceName;
-    this.voltage = voltage;
-    this.deviceStatus = deviceStatus;
-    this.sampling = sampling;
-    this.event = Stringevent;
-    this.button = button;
-    this.eSenseName = eSenseName;
-    this.offsetX = offsetX;
-    this.offsetY = offsetY;
-    this.offsetZ = offsetZ;
-    this.gyroX = gyroX;
-    this.gyroY = gyroY;
-    this.gyroZ = gyroZ;
+  Info(ESense eSense) {
+    this.eSense = eSense;
   }
 
   @override
@@ -44,32 +20,26 @@ class Info extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: (widget.deviceStatus == 'device_not_found') ? Colors.redAccent : Colors.greenAccent,
+      backgroundColor: (widget.eSense.deviceStatus == 'device_not_found') ? Colors.redAccent : Colors.greenAccent,
       body:
       Align(
         alignment: Alignment.topLeft,
         child: ListView(
           children: [
-            Text('eSense Device Status: \t'+ widget.deviceStatus),
-            Text('eSense Device Name: \t' + widget.deviceName),
-            Text('eSense Battery Level: \t' + widget.voltage.toString()),
-            Text('eSense Button Event: \t' + widget.button),
-            Text('eSense accel OffsetX: \t' + widget.offsetX),
-            Text('eSense accel OffsetY: \t' + widget.offsetY),
-            Text('eSense accel OffsetZ: \t' + widget.offsetZ),
-            Text('eSense gyro OffsetX: \t' + widget.gyroX),
-            Text('eSense gyro OffsetY: \t' + widget.gyroY),
-            Text('eSense gyro OffsetZ: \t' + widget.gyroZ),
+            Text('eSense Device Status: \t'+ widget.eSense.deviceStatus),
+            Text('eSense Device Name: \t' + widget.eSense.deviceName),
+            Text('eSense Battery Level: \t' + widget.eSense.voltage.toString()),
+            Text('eSense Button Event: \t' + widget.eSense.button),
+            Text('eSense accel OffsetX: \t' + widget.eSense.accelX),
+            Text('eSense accel OffsetY: \t' + widget.eSense.accelY),
+            Text('eSense accel OffsetZ: \t' + widget.eSense.accelZ),
+            Text('eSense gyro OffsetX: \t' + widget.eSense.gyroX),
+            Text('eSense gyro OffsetY: \t' + widget.eSense.gyroY),
+            Text('eSense gyro OffsetZ: \t' + widget.eSense.gyroZ),
           ],
         ),
       ),
     );
-  }
-
-  void pressedButton() {
-    setState(() {
-
-    });
   }
 
   @override
