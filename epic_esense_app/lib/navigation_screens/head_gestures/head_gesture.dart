@@ -1,3 +1,5 @@
+import 'dart:async';
+
 /**
  * create abstract class for a general head gesture for regulate music player
 */
@@ -18,6 +20,7 @@ abstract class head_gesture_observer implements gesture_observer{
   bool firstCheckPassed = false;
   SensorEvent lastEvent;
 
+  @override
   bool occured(SensorEvent new_event) {
 
     //first occuring event; wait for other to happening
@@ -30,9 +33,10 @@ abstract class head_gesture_observer implements gesture_observer{
 
     if(!firstCheckPassed && this.checkPreviousEvent(this.lastEvent, new_event)) {
       this.firstCheckPassed = true;
-      //Timer(Duration(milliseconds: 500), () {
-      //this.firstCheckPassed = false;
-      //});
+      Timer(Duration(milliseconds: 500), () {
+      this.firstCheckPassed = false;
+      });
+      occured = false;
     } else if (this.firstCheckPassed && this.checkNextEvent(this.lastEvent, new_event)) {
       this.firstCheckPassed = false;
       occured = true;

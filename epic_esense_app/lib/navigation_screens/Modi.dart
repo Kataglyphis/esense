@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:epic_esense_app/navigation_screens/Modus.dart';
+import 'package:epic_esense_app/esense.dart';
 
 enum LastButtonPressed {VolumeModulator,Workout,None }
 
 class Modi extends StatelessWidget {
+
+  ESense esense;
+  Modi({this.esense});
 
   static const _modiNames = <String>[
     'Workout',
@@ -61,12 +65,13 @@ class Modi extends StatelessWidget {
     }
 
     final listView = Container(
-      color: Colors.greenAccent,
+      color: (esense.deviceStatus == 'device_not_found') ? Colors.deepOrangeAccent : Colors.greenAccent,//Colors.greenAccent,
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: _buildModiWidgets(modi),
     );
 
     return Scaffold(
+      backgroundColor: (esense.deviceStatus == 'device_not_found') ? Colors.redAccent : Colors.greenAccent,
       body: listView,
     );
 

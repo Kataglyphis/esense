@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../esense.dart';
 
@@ -17,10 +18,16 @@ class Info extends StatefulWidget {
 
   class _MyInfoState extends State<Info> {
 
+    void new_data(){
+      setState(() {
+
+      });
+    }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: (widget.eSense.deviceStatus == 'device_not_found') ? Colors.redAccent : Colors.greenAccent,
+      backgroundColor: (widget.eSense.deviceStatus == 'device_not_found') ? Colors.deepOrangeAccent : Colors.greenAccent,
       body:
       Align(
         alignment: Alignment.topLeft,
@@ -28,17 +35,25 @@ class Info extends StatefulWidget {
           children: [
             Text('eSense Device Status: \t'+ widget.eSense.deviceStatus),
             Text('eSense Device Name: \t' + widget.eSense.deviceName),
-            Text('eSense Battery Level: \t' + widget.eSense.voltage.toString()),
-            Text('eSense Button Event: \t' + widget.eSense.button),
-            Text('eSense accel OffsetX: \t' + widget.eSense.accelX),
-            Text('eSense accel OffsetY: \t' + widget.eSense.accelY),
-            Text('eSense accel OffsetZ: \t' + widget.eSense.accelZ),
-            Text('eSense gyro OffsetX: \t' + widget.eSense.gyroX),
-            Text('eSense gyro OffsetY: \t' + widget.eSense.gyroY),
-            Text('eSense gyro OffsetZ: \t' + widget.eSense.gyroZ),
+            Text('Find he source code to this project and many others here'),
+            new RaisedButton(
+              onPressed: _launchGithub,
+              child: new Text('Visit my Github :)')),
+            Text('Author Jonas Heinle'),
+            Text('For more Information about me go on my website'),
+            new RaisedButton(
+                onPressed: _launchHomepage,
+                child: new Text('Visit my homepage :)')),
           ],
         ),
       ),
+      /*floatingActionButton: new FloatingActionButton(
+        // a floating button that starts/stops listening to sensor events.
+        // is disabled until we're connected to the device.
+        onPressed:  this.new_data,
+        tooltip: 'Refresh',
+        child: Icon(Icons.play_arrow),
+      ),*/
     );
   }
 
@@ -53,4 +68,22 @@ class Info extends StatefulWidget {
     super.dispose();
 
   }
+
+  _launchGithub() async {
+      const url = 'https://github.com/Kataglyphis';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
+
+    _launchHomepage() async {
+      const url = 'https://jotrockenmitlocken.de/';
+      if (await canLaunch(url)) {
+        await launch(url);
+      } else {
+        throw 'Could not launch $url';
+      }
+    }
 }

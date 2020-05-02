@@ -1,4 +1,5 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:esense_flutter/esense.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -34,6 +35,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
   List<gesture_observer> eventCheckers = new List();
   EventBus sensorEventBus = new EventBus();
   bool listeningToGestures = false;
+  bool changing = false;
 
   _MusicPlayerState({this.esense, this.connectedBus});
 
@@ -126,6 +128,30 @@ class _MusicPlayerState extends State<MusicPlayer> {
         .listen((_) => setState(() {
       listeningToGestures = false;
     }));
+
+    this.connectedBus.on().listen((event) {
+      if (event.type == ConnectionType.connected) {
+        _setupESense();
+      }
+    });
+  }
+
+  void _setupESense() {
+    this._registerSensorCheckers();
+    this._registerSensorListeners();
+    this.esense.registerButtonChangedHandler((event) {
+      print('called $event');
+      if (!this.changing && (event as ButtonEventChanged).pressed) {
+        if (this.esense.listening) {
+          print('stop listening');
+          this.esense.stopListenToSensorEvents();
+        } else {
+          this.esense.startListenToSensorEvents();
+        }
+        this.changing = true;
+        Timer(Duration(seconds: 1), () => this.changing = false);
+      }
+    });
   }
 
   @override
@@ -309,11 +335,11 @@ class _MusicPlayerState extends State<MusicPlayer> {
   }
 
   void _registerSensorListeners() {
-    /*sensorEventBus.on<TurnDown>()
-        .listen((event) => playOrPause());
+    sensorEventBus.on<TurnDown>()
+        .listen((event) => _assetsAudioPlayer.playOrPause());
     sensorEventBus.on<TurnLeft>()
-        .listen((event) => previous());
+        .listen((event) => _assetsAudioPlayer.previous());
     sensorEventBus.on<TurnRight>()
-        .listen((event) => next());*/
+        .listen((event) => _assetsAudioPlayer.next());
   }
 }

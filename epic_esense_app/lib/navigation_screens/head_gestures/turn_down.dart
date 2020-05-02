@@ -7,16 +7,16 @@ class TurnDownObserver extends head_gesture_observer {
 
   @override
   bool checkPreviousEvent(SensorEvent oldEvent, SensorEvent newEvent) {
-    return oldEvent.gyro[2] - newEvent.gyro[2] > 4000;
+    return oldEvent.gyro[2] - newEvent.gyro[2] < -4000;
   }
 
   @override
   bool checkNextEvent(SensorEvent oldEvent, SensorEvent newEvent) {
-    return oldEvent.gyro[2] - newEvent.gyro[2] < -6000;
+    return oldEvent.gyro[2] - newEvent.gyro[2] > 6000;
   }
 
-  @override TurnDown createEvent() {
-
+  @override
+  TurnDown createEvent() {
     return new TurnDown();
   }
 }

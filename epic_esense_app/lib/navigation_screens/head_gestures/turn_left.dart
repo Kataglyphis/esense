@@ -15,8 +15,8 @@ class TurnLeftObserver extends head_gesture_observer {
     return oldEvent.gyro[1] - newEvent.gyro[1] > 6000;
   }
 
-  @override TurnLeft createEvent() {
-
+  @override
+  TurnLeft createEvent() {
     return new TurnLeft();
   }
 }

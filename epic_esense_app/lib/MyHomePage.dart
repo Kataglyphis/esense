@@ -13,6 +13,8 @@ import 'package:epic_esense_app/navigation_screens/head_gestures/turn_up.dart';
 import 'package:epic_esense_app/navigation_screens/head_gestures/turn_left.dart';
 import 'package:epic_esense_app/navigation_screens/head_gestures/turn_right.dart';
 import 'package:epic_esense_app/esense.dart';
+import 'package:epic_esense_app/navigation_screens/new_music_player.dart';
+import 'package:epic_esense_app/navigation_screens/MusicPlayerCanvas.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -27,7 +29,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
 
   String eSenseName = 'eSense-0414';
-  MusicPlayer mp;
+  NewMusicPlayer mp;
   ESense esense;
   EventBus connectedBus;
   EventBus songChangedBus;
@@ -43,12 +45,15 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+          this.createGestureButton(context)
+        ],
       ),
       body:
         PageView(
         children: <Widget>[
-          mp,
-          Modi(),
+          MusicPlayerCanvas(eSense: esense,player: mp, connectedBus: connectedBus, ),
+          Modi(esense: esense),
           Info(esense),
         ],
         controller: _pageController,
@@ -73,13 +78,13 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: navigationTapped,
         currentIndex: _page,
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      //floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       floatingActionButton: new FloatingActionButton(
         // a floating button that starts/stops listening to sensor events.
         // is disabled until we're connected to the device.
-        onPressed: (this.state == "disconnected") ? this.connectESense : this.disconnectESense,
+        onPressed: (!ESenseManager.connected) ? this.connectESense : this.disconnectESense,
         tooltip: 'Listen to eSense sensors',
-        child: (this.state == "connected") ? Icon(Icons.play_arrow) : Icon(Icons.pause),
+        child: (this.state == 'disconnected') ? Icon(Icons.bluetooth_disabled) : Icon(Icons.bluetooth_connected),
       ),
     );
   }
@@ -104,13 +109,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     this.songChangedBus = new EventBus();
-    this.connectedBus = new EventBus();
+    this.mp = NewMusicPlayer(songChangedBus: this.songChangedBus);
     this.esense = new ESense();
+    this.connectedBus = new EventBus();
+
     this.state = 'disconnected';
     _pageController = PageController();
-    this.mp = MusicPlayer(esense: this.esense,connectedBus: this.connectedBus);
-
-    connectESense();
 
     this.songChangedBus.on()
         .listen((current) => setState(() {
@@ -130,8 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     super.dispose();
     _pageController.dispose();
-    esense.stopListenToSensorEvents();
-    ESenseManager.disconnect();
+    //ESenseManager.disconnect();
   }
 
   void connectESense({String name = ''}) {
@@ -155,6 +158,31 @@ class _MyHomePageState extends State<MyHomePage> {
         listeningToGestures = false;
       });
     });
+  }
+
+  Widget createGestureButton(BuildContext context) {
+    FlatButton button;
+    if (this.listeningToGestures == true) {
+      button = FlatButton(
+        onPressed: this.esense.stopListenToSensorEvents,
+        child: Container(
+          child: Icon(Icons.hearing, color: Colors.blue,),
+          color: Colors.white,
+
+        ),
+
+      );
+    } else if (this.listeningToGestures == false) {
+      button = FlatButton(
+        onPressed: this.esense.startListenToSensorEvents,
+        child: Icon(Icons.record_voice_over, color: Colors.white,),
+      );
+    }
+    Widget content = Visibility(
+      child: button,
+      visible: this.state == 'connected',
+    );
+    return content;
   }
 }
 

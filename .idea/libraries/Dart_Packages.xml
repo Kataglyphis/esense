@@ -33,7 +33,7 @@
         <entry key="audioplayers">
           <value>
             <list>
-              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.15.1/lib" />
+              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.13.7/lib" />
             </list>
           </value>
         </entry>
@@ -132,6 +132,13 @@
           <value>
             <list>
               <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/image-2.1.4/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="js">
+          <value>
+            <list>
+              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.1+1/lib" />
             </list>
           </value>
         </entry>
@@ -275,6 +282,34 @@
             </list>
           </value>
         </entry>
+        <entry key="url_launcher">
+          <value>
+            <list>
+              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.4.5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="url_launcher_macos">
+          <value>
+            <list>
+              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="url_launcher_platform_interface">
+          <value>
+            <list>
+              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_platform_interface-1.0.6/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="url_launcher_web">
+          <value>
+            <list>
+              <option value="C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.1+2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="uuid">
           <value>
             <list>
@@ -310,7 +345,7 @@
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/args-1.5.2/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/assets_audio_player-1.4.0/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/async-2.4.0/lib" />
-      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.15.1/lib" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/audioplayers-0.13.7/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/boolean_selector-1.0.5/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/charcode-1.1.2/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/collection-1.14.11/lib" />
@@ -322,6 +357,7 @@
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_launcher_icons-0.7.5/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_neumorphic-1.0.7/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/image-2.1.4/lib" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/js-0.6.1+1/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.6/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/meta-1.1.8/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.6.4/lib" />
@@ -341,6 +377,10 @@
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.1.0/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.11/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.4.5/lib" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+5/lib" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_platform_interface-1.0.6/lib" />
+      <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_web-0.1.1+2/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/uuid-2.0.4/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.8/lib" />
       <root url="file://C:/flutter/flutter/.pub-cache/hosted/pub.dartlang.org/xml-3.5.0/lib" />

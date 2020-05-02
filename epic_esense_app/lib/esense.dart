@@ -10,7 +10,7 @@ class ESense {
 
   String deviceName = 'Unknown';
   double voltage = -1;
-  String deviceStatus = '';
+  String deviceStatus = 'device_not_found';
   bool sampling = false;
   String eventString = '';
   String button = 'not pressed';
@@ -45,7 +45,7 @@ class ESense {
       }
       return false;
     });
-
+    this.deviceStatus = 'connected';
     ESenseManager.connect(eSenseName);
     return result;
   }
@@ -59,6 +59,7 @@ class ESense {
       }
       return false;
     });
+    this.deviceStatus = 'device_not_found';
     ESenseManager.disconnect();
     return result;
   }
@@ -75,7 +76,8 @@ class ESense {
     this.eventCheckers.add(observer);
   }
 
-  void startListenToSensorEvents() async {
+  //StreamSubscription subscription;
+  void startListenToSensorEvents() {
     this.listening = true;
     this.sensorEventBus.fire(new head_gesture_event_start());
     this.sensorSubscription = ESenseManager.sensorEvents.listen((event) {
@@ -86,64 +88,64 @@ class ESense {
           Timer(Duration(seconds: 2), () => this.checked = false);
         }
       }
+      Queue queueX_accel = new Queue();
+      Queue queueY_accel = new Queue();
+      Queue queueZ_accel = new Queue();
+      Queue queueX_gyro = new Queue();
+      Queue queueY_gyro = new Queue();
+      Queue queueZ_gyro = new Queue();
+
+      // subscribe to sensor event from the eSense device
+      //subscription = ESenseManager.sensorEvents.listen((event) {
+      //print('SENSOR event: $event');
+      if(queueX_accel.length <= 10) {
+
+        queueX_gyro.addFirst(event.gyro[0]);
+        queueY_gyro.addFirst(event.gyro[1]);
+        queueZ_gyro.addFirst(event.gyro[2]);
+
+        queueX_accel.addFirst(event.accel[0]);
+        queueY_accel.addFirst(event.accel[1]);
+        queueZ_accel.addFirst(event.accel[2]);
+
+      } else {
+
+        List<int> mv_data_accel = new List();
+        List<int> mv_data_gyro = new List();
+        const int offsetX = -5504;
+        const int offsetY = -5568;
+        const int offsetZ = 9580;
+
+        mv_data_accel.add(_filter(queueX_accel) - offsetX);
+        mv_data_accel.add(_filter(queueY_accel) - offsetY);
+        mv_data_accel.add(_filter(queueZ_accel) - offsetZ);
+
+        mv_data_gyro.add(_filter(queueX_gyro));
+        mv_data_gyro.add(_filter(queueY_gyro));
+        mv_data_gyro.add(_filter(queueZ_gyro));
+
+        //BLEeSense specs page 16 very bottom of page
+        accelX = ((mv_data_accel[0] / 8192) * 9.80665).toStringAsFixed(1);
+        accelY = ((mv_data_accel[1] / 8192) * 9.80665).toStringAsFixed(1);
+        accelZ = ((mv_data_accel[2] / 8192) * 9.80665).toStringAsFixed(1);
+
+        gyroX = mv_data_gyro[0].toStringAsFixed(1);
+        gyroY = mv_data_gyro[1].toStringAsFixed(1);
+        gyroZ = mv_data_gyro[2].toStringAsFixed(1);
+
+        queueX_gyro.removeLast();
+        queueY_gyro.removeLast();
+        queueZ_gyro.removeLast();
+
+        queueX_accel.removeLast();
+        queueY_accel.removeLast();
+        queueZ_accel.removeLast();
+      }
+      eventString = event.toString();
     });
     //implementing a Moving Average Filter for more precise results
-    /*Queue queueX_accel = new Queue();
-    Queue queueY_accel = new Queue();
-    Queue queueZ_accel = new Queue();
-    Queue queueX_gyro = new Queue();
-    Queue queueY_gyro = new Queue();
-    Queue queueZ_gyro = new Queue();
 
-    // subscribe to sensor event from the eSense device
-    subscription = ESenseManager.sensorEvents.listen((event) {
-      //print('SENSOR event: $event');
-        if(queueX_accel.length <= 10) {
-
-          queueX_gyro.addFirst(event.gyro[0]);
-          queueY_gyro.addFirst(event.gyro[1]);
-          queueZ_gyro.addFirst(event.gyro[2]);
-
-          queueX_accel.addFirst(event.accel[0]);
-          queueY_accel.addFirst(event.accel[1]);
-          queueZ_accel.addFirst(event.accel[2]);
-
-        } else {
-
-          List<int> mv_data_accel = new List();
-          List<int> mv_data_gyro = new List();
-          const int offsetX = -5504;
-          const int offsetY = -5568;
-          const int offsetZ = 9580;
-
-          mv_data_accel.add(_filter(queueX_accel) - offsetX);
-          mv_data_accel.add(_filter(queueY_accel) - offsetY);
-          mv_data_accel.add(_filter(queueZ_accel) - offsetZ);
-
-          mv_data_gyro.add(_filter(queueX_gyro));
-          mv_data_gyro.add(_filter(queueY_gyro));
-          mv_data_gyro.add(_filter(queueZ_gyro));
-
-          //BLEeSense specs page 16 very bottom of page
-          accelX = ((mv_data_accel[0] / 8192) * 9.80665).toStringAsFixed(1);
-          accelY = ((mv_data_accel[1] / 8192) * 9.80665).toStringAsFixed(1);
-          accelZ = ((mv_data_accel[2] / 8192) * 9.80665).toStringAsFixed(1);
-
-          gyroX = mv_data_gyro[0].toStringAsFixed(1);
-          gyroY = mv_data_gyro[1].toStringAsFixed(1);
-          gyroZ = mv_data_gyro[2].toStringAsFixed(1);
-
-          queueX_gyro.removeLast();
-          queueY_gyro.removeLast();
-          queueZ_gyro.removeLast();
-
-          queueX_accel.removeLast();
-          queueY_accel.removeLast();
-          queueZ_accel.removeLast();
-        }
-        eventString = event.toString();
-      });
-    sampling = true;*/
+    //sampling = true;
 
   }
   void stopListenToSensorEvents() {
