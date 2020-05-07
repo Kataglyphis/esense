@@ -2,44 +2,42 @@
 --------
 About me
 --------
- - undergraduate IT student interested in :
+ - graduated IT student interested in :
     - modern graphics hardware
     - real time applications 
-    - 
- - 
-
-
+    - IoT
 
 -----------------------
 Purpose of this project
 -----------------------
-Image computation using hardware-assisted radiation tracking and associated techniques are currently gaining in importance in real-time computer graphics.
-Despite this new hardware support, only a little computing time is required to calculate one
-single image. Along with this short computing time, there are fewer paths, and accordingly fewer
-Length. Previous work has to be done to counteract the resulting image noise,
-included the blue noise error distributions and emphasized and clarified their importance in increasing the perceptible image quality.
-This work explains a temporally stable algorithm based on this technique. In contrast to the previous approaches, we want to apply an error redistribution directly in the image space, and so one accordingly
-to get correlated pixel sequence. The algorithm achieves all of this without significant additional effort.
+Exploring earables provided by esense.io in context of pervasive computing
 	
 
 ---------------------
 What is used in here?
 ---------------------
 - Flutter/Dart 
-- 
+- ESense (esense.io)
  
 
 --------------------
 Algorithmic Analysis
 --------------------
-- Simulated Annealing
-- Path Tracing
+- Moving average for sensor events
+- Async programming
 
 ---------------
 Troubleshooting
 ---------------
-- wrong thread id's in Falcor need special treatment
+- 
 
 ------------------
 How to get started
 ------------------
+just clone; run flutter get pub and upgrade; enjoy :)
+
+------------------
+Images
+------------------
+![give the correct url jonas!](images/image1.jpg)
+![give the correct url jonas!](images/image2.jpg)
