@@ -39,5 +39,8 @@ just clone; run flutter get pub and upgrade; enjoy :)
 ------------------
 Images
 ------------------
-![give the correct url jonas!](images/image1.jpg)
-![give the correct url jonas!](images/image2.jpg)
+<p align="center">
+  <img src="images/image1.jpg" width="350" title="hover text">
+  <img src="images/image2.jpg" width="350" alt="accessibility text">
+  <img src="images/image3.jpg" width="350" alt="accessibility text">
+</p>
