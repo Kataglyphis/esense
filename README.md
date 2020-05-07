@@ -40,7 +40,7 @@ just clone; run flutter get pub and upgrade; enjoy :)
 Images
 ------------------
 <p align="center">
-  <img src="images/image1.jpg" width="350" title="hover text">
-  <img src="images/image2.jpg" width="350" alt="accessibility text">
-  <img src="images/image3.jpg" width="350" alt="accessibility text">
+  <img src="images/image1.jpg" width="300" title="player">
+  <img src="images/image2.jpg" width="300" title="Modi" alt="Modi">
+  <img src="images/image3.jpg" width="300" title="Info" alt="Info">
 </p>
