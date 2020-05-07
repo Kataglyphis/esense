@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body:
         PageView(
         children: <Widget>[
-          MusicPlayerCanvas(eSense: esense,player: mp, connectedBus: connectedBus, ),
+          MusicPlayerCanvas(eSense: esense,player: mp, connectedBus: connectedBus, songChangedBus: this.songChangedBus),
           Modi(esense: esense),
           Info(esense),
         ],
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: navigationTapped,
         currentIndex: _page,
       ),
-      //floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+      //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       floatingActionButton: new FloatingActionButton(
         // a floating button that starts/stops listening to sensor events.
         // is disabled until we're connected to the device.

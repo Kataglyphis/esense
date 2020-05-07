@@ -7,12 +7,12 @@ class TurnRightObserver extends head_gesture_observer {
 
   @override
   bool checkPreviousEvent(SensorEvent oldEvent, SensorEvent newEvent) {
-    return oldEvent.gyro[1] - newEvent.gyro[1] > 4000;
+    return oldEvent.gyro[1] - newEvent.gyro[1] > 2000;
   }
 
   @override
   bool checkNextEvent(SensorEvent oldEvent, SensorEvent newEvent) {
-    return oldEvent.gyro[1] - newEvent.gyro[1] < -6000;
+    return oldEvent.gyro[1] - newEvent.gyro[1] < -2000;
   }
 
   @override TurnRight createEvent() {

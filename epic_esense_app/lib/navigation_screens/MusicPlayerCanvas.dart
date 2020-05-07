@@ -11,9 +11,10 @@ class MusicPlayerCanvas extends StatelessWidget {
   NewMusicPlayer player;
   EventBus connectedBus;
   ESense eSense;
-  int currentSong = -1;
+  EventBus songChangedBus;
+  EventBus sensorEventBus;
 
-  MusicPlayerCanvas({this.eSense, this.player,this.connectedBus, this.currentSong});
+  MusicPlayerCanvas({this.eSense, this.player,this.connectedBus, this.songChangedBus, this.sensorEventBus});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,8 @@ class MusicPlayerCanvas extends StatelessWidget {
           eSense: this.eSense,
           player: this.player,
           connectedBus: this.connectedBus,
-          currentSong: this.currentSong
+          songChangedBus: this.songChangedBus,
+          sensorEventBus: this.sensorEventBus
     );
   }
 }
@@ -31,15 +33,18 @@ class MyStatefulWidget extends StatefulWidget {
   final NewMusicPlayer player;
   final EventBus connectedBus;
   final ESense eSense;
-  int currentSong = 1;
+  EventBus songChangedBus;
+  EventBus sensorEventBus;
 
-  MyStatefulWidget({this.eSense, this.player, this.connectedBus, this.currentSong});
+  MyStatefulWidget({this.eSense, this.player, this.connectedBus, this.songChangedBus, this.sensorEventBus});
   @override
   _MyStatefulWidgetState createState() => _MyStatefulWidgetState(
       eSense: this.eSense,
       player: this.player,
       connectedBus: this.connectedBus,
-      currentSong: this.currentSong);
+      songChangedBus: this.songChangedBus,
+      sensorEventBus: this.sensorEventBus
+      );
 
 }
 
@@ -47,10 +52,23 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   final NewMusicPlayer player;
   final EventBus connectedBus;
   final ESense eSense;
+  EventBus songChangedBus;
+  EventBus sensorEventBus;
   int currentSong = -1;
 
-  _MyStatefulWidgetState({this.eSense, this.player, this.connectedBus, this.currentSong});
+  _MyStatefulWidgetState({this.eSense, this.player, this.connectedBus, this.songChangedBus, this.sensorEventBus});
 
+  @override
+  void initState() {
+    this.songChangedBus.on()
+        .listen((current) => setState(() {
+      currentSong = current;
+    }));
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: (widget.eSense.deviceStatus == 'device_not_found') ? Colors.deepOrangeAccent : Colors.greenAccent,
